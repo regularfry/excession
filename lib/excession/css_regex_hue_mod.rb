@@ -9,7 +9,10 @@ module Excession
 
     # Use this entry point.
     def rotate_hue(angle_degrees, str)
-      replace_colours(str){|h,s,l| [h+angle_degrees, s, l]}
+      replace_colours(str) do |hsl| 
+        h,s,l = *hsl
+        [h+angle_degrees, s, l]
+      end
     end
 
 

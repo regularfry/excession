@@ -44,32 +44,32 @@ module TestExcession
 
     def test_modify_rgb
       
-      result = @m.modify_rgb([255,255,255]){|h,s,l| [180,s,l]}
+      result = @m.modify_rgb([255,255,255]){|hsl| h,s,l=*hsl; [180,s,l]}
       assert_equal "#ffffff", result
     end
 
     def test_replace_colours_hashsix
       orig = "background-color: #ff0000;"
       target = "background-color: #00ff00;"
-      assert_equal(target, @m.replace_colours(orig){|h,s,l| [h+120,s,l]})
+      assert_equal(target, @m.replace_colours(orig){|hsl| h,s,l=*hsl; [h+120,s,l]})
     end
 
     def test_replace_colours_hashthree
       orig = "color: #f00}"
       target = "color: #00ff00}"
-      assert_equal(target, @m.replace_colours(orig){|h,s,l| [h+120,s,l]})
+      assert_equal(target, @m.replace_colours(orig){|hsl| h,s,l=*hsl; [h+120,s,l]})
     end
 
     def test_replace_colours_rgb
       orig = "color: rgb(255,0,0);"
       target = "color: #00ff00;"
-      assert_equal(target, @m.replace_colours(orig){|h,s,l| [h+120,s,l]})
+      assert_equal(target, @m.replace_colours(orig){|hsl| h,s,l=*hsl; [h+120,s,l]})
     end
 
     def test_replace_colours_rgbpct
       orig = "color: rgb(100%,0%,0%);"
       target = "color: #00ff00;"
-      assert_equal(target, @m.replace_colours(orig){|h,s,l| [h+120,s,l]})    
+      assert_equal(target, @m.replace_colours(orig){|hsl| h,s,l=*hsl; [h+120,s,l]})    
     end
 
 =begin
