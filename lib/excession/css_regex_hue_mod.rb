@@ -1,10 +1,10 @@
 module Excession
   class CssRegexHueMod
 
-    HASHSIX = /#(?<hexr>[a-f0-9]{2})(?<hexg>[a-f0-9]{2})(?<hexb>[a-f0-9]{2})(?<end>\s|;|})/i
-    HASHTHREE = /#(?<hexr>[a-f0-9])(?<hexg>[a-f0-9])(?<hexb>[a-f0-9])(?<end>\s|;|})/i
-    RGBCALL = /rgb\(\s*(?<strr>-?[0-9]+)\s*,\s*(?<strg>-?[0-9]+)\s*,\s*(?<strb>-?[0-9]+)\)/i
-    RGBPCTCALL = /rgb\(\s*(?<strr>-?[0-9]+)\s*%\s*,\s*(?<strg>-?[0-9]+)\s*%\s*,\s*(?<strb>-?[0-9]+)\s*%\s*\)/i
+    HASHSIX = /#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})(\s|;|})/i
+    HASHTHREE = /#([a-f0-9])([a-f0-9])([a-f0-9])(\s|;|})/i
+    RGBCALL = /rgb\(\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\s*,\s*(-?[0-9]+)\)/i
+    RGBPCTCALL = /rgb\(\s*(-?[0-9]+)\s*%\s*,\s*(-?[0-9]+)\s*%\s*,\s*(-?[0-9]+)\s*%\s*\)/i
 
 
     # Use this entry point.
@@ -99,19 +99,23 @@ module Excession
     def replace_colours(str, &blk)
 
       str.gsub!(HASHSIX) do
-        modify_rgb([$~[:hexr], $~[:hexg], $~[:hexb]].map(&:hex), &blk)+$~[:end]
+        hexr, hexg, hexb, tend = $1, $2, $3, $4
+        modify_rgb([hexr, hexg, hexb].map(&:hex), &blk)+tend
       end
 
       str.gsub!(HASHTHREE) do 
-        modify_rgb(["#{$~[:hexr]*2}","#{$~[:hexg]*2}","#{$~[:hexb]*2}"].map(&:hex), &blk)+$~[:end]
+        hexr, hexg, hexb, tend = $1, $2, $3, $4
+        modify_rgb([hexr*2,hexg*2,hexb*2].map(&:hex), &blk)+tend
       end
 
       str.gsub!(RGBCALL) do
-        modify_rgb([$~[:strr], $~[:strg], $~[:strb]].map{|s|Integer(s)}, &blk)
+        strr, strg, strb = $1, $2, $3
+        modify_rgb([strr, strg, strb].map{|s|Integer(s)}, &blk)
       end
       
       str.gsub!(RGBPCTCALL) do
-        modify_rgb([$~[:strr], $~[:strg], $~[:strb]].
+        strr, strg, strb = $1, $2, $3
+        modify_rgb([strr, strg, strb].
                    map{|s|Integer(s)}.
                    map{|i| (i/100.0) * 255 }, # Don't just multiply by 2.55, it's not accurate
                    &blk)
