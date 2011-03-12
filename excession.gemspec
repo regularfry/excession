@@ -1,5 +1,5 @@
-# lib = File.expand_path("../lib", __FILE__)
-# $:.unshift(lib) unless $:.include?(lib)
+lib = File.expand_path("../lib", __FILE__)
+$:.unshift(lib) unless $:.include?(lib)
 
 require 'excession/version'
 
@@ -18,7 +18,8 @@ programmatically modify colours in a site's style sheets.
 DESCRIPTION
 
   s.required_rubygems_version = ">= 1.3.6"
-  
+  s.add_dependency("parslet", ">= 1.2.0")
+
   s.files = Dir["lib/**/*.rb"]
   s.require_path = "lib"
 end
